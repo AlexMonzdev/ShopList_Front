@@ -63,41 +63,26 @@ async function deleteItemFromList(inputIdDOM) {
   await printList();
 }
 
-async function checkedItem(idDOM) {
-  // Find the item using its ID
-  const item = items.find((item) => item.id === parseInt(idDOM, 10));
+async function checkedItem(itemId) {
+  const item = items.find((item) => item.id == itemId);
   if (!item) {
-    console.error("Item not found:", idDOM);
+    console.error("Item no encontrado:", itemId);
     return;
   }
 
-  // Toggle the `bought` status
   item.bought = !item.bought;
-  const itemObject = {
-    bought: item.bought,
-  };
 
-  // Update the item via the API
   try {
-    await putItemToAPI(idDOM, itemObject);
-    await printList(); // Re-render the list
+    await putItemToAPI(itemId, { ...item, bought: item.bought });
+    console.log(`Estado del item ${item.name} actualizado a ${item.bought}`);
   } catch (error) {
-    console.error("Error updating item:", error);
+    console.error("Error al actualizar el estado:", error);
+    return;
   }
+
+  printList();
 }
 
-/*
-async function checkedItem(idDOM, index) {
-  items[index].bought = !items[index].bought;
-  const itemStatus = items[index].bought;
-  let itemObject = {
-    bought: items[index].bought,
-  };
-  await putItemToAPI(idDOM, itemObject);
-
-  await printList();
-}
-*/
 
 function textFormat(text) {
   const splitText = text.split(" ");
